@@ -1,6 +1,5 @@
 package com.app.rewards_system.config;
 
-import com.app.rewards_system.repository.CustomerRepository;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.Customizer;
