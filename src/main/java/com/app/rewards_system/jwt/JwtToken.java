@@ -39,15 +39,15 @@ public class JwtToken {
                     .parseClaimsJws(token);
             logger.error("JWT claims string is valid: {}", "valid");
             return true;
-        }catch (MalformedJwtException | SignatureException e){
-            logger.error("Invalid JWT token"+e.getMessage());
+        }catch (MalformedJwtException e){
+            logger.error("Invalid JWT token{}", e.getMessage());
         }catch (ExpiredJwtException e){
-            logger.error("Expired JWT token"+e.getMessage());
+            logger.error("Expired JWT token{}", e.getMessage());
         }catch (UnsupportedJwtException e){
-            logger.error("Unsupported JWT token"+e.getMessage());
+            logger.error("Unsupported JWT token{}", e.getMessage());
 
         }catch (IllegalArgumentException e){
-            logger.error("JWT claims string is empty"+e.getMessage());
+            logger.error("JWT claims string is empty{}", e.getMessage());
         }
         return false;
     }
