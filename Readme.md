@@ -79,7 +79,7 @@ The goal of this task is to design and develop a basic backend API using Java Sp
 
 ### 2. **Security:**
 - **Token-Based Authentication :**
-    - **Endpoint:** `/api/rewards/token`
+    - **Endpoint:** `/api/token`
 - **Request Type:** `POST`
 - **Functionality:** Get authorization token 
 - **Request Parameters:**
@@ -92,4 +92,6 @@ The goal of this task is to design and develop a basic backend API using Java Sp
   ```
 ---
 
+### **Note:**
+#### **You are required to generate bearer token to access  balance and history endpoints:**
 
