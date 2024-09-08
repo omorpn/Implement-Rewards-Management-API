@@ -23,5 +23,7 @@ public class Customer {
     private double currentBalance;
     @OneToMany
     private List<CashbackHistory> cashbackHistory;
+    @Enumerated(EnumType.STRING)
     private Role role;
+
 }

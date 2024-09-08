@@ -23,7 +23,7 @@ public class JwtToken {
 
     }
 
-    String generateToken(String subject){
+   public String generateToken(String subject){
         return Jwts.builder()
                 .setSubject(subject)
                 .setIssuedAt(new Date(System.currentTimeMillis()))
@@ -31,7 +31,7 @@ public class JwtToken {
                 .signWith(secretKey())
                 .compact();
     }
-    boolean validateToken(String token){
+    public boolean validateToken(String token){
         try {
             Jwts.parserBuilder()
                     .setSigningKey(secretKey())

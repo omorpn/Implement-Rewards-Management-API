@@ -16,20 +16,17 @@ public class RewardController {
     public RewardController(CustomerService customerService) {
         this.customerService = customerService;
     }
+
     @ResponseStatus(HttpStatus.ACCEPTED)
     @GetMapping("/history/{id}")
-    public RewardHistoryDto getRewardHistory(@PathVariable String id) {
-       return customerService.getReward(id);
-    }
-    @ResponseStatus(HttpStatus.ACCEPTED)
-    @GetMapping("/history/all/{id}")
     public List<RewardHistoryDto> getAllRewardHistory(@PathVariable String id) {
         return customerService.getRewards(id);
     }
 
+
     @ResponseStatus(HttpStatus.ACCEPTED)
-    @GetMapping("/balance/{id}")
-    public CustomerDto getCustomerBalance(@PathVariable String id) {
-        return customerService.customerReward(id);
+    @GetMapping("/balance")
+    public CustomerDto getCustomerBalance() {
+        return customerService.customerReward();
     }
 }

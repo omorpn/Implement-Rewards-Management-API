@@ -2,10 +2,13 @@ package com.app.rewards_system.service;
 
 import com.app.rewards_system.dto.CustomerDto;
 import com.app.rewards_system.dto.RewardHistoryDto;
+import com.app.rewards_system.dto.TokenRequestDto;
+import com.app.rewards_system.dto.TokenResponseDto;
+import com.app.rewards_system.jwt.JwtToken;
 import com.app.rewards_system.model.CashbackHistory;
 import com.app.rewards_system.model.Customer;
-import com.app.rewards_system.repository.CashBackHistoryRepository;
 import com.app.rewards_system.repository.CustomerRepository;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 
@@ -14,13 +17,16 @@ import java.util.List;
 
 @Service
 public class CustomerService {
-    private final CustomerRepository customerRepository;
-    private final CashBackHistoryRepository cashBackHistoryRepository;
 
-    public CustomerService(CustomerRepository customerRepository, CashBackHistoryRepository cashBackHistoryRepository) {
+    private final CustomerRepository customerRepository;
+    private final JwtToken jwtToken;
+
+    public CustomerService(CustomerRepository customerRepository, JwtToken jwtToken) {
         this.customerRepository = customerRepository;
-        this.cashBackHistoryRepository = cashBackHistoryRepository;
+
+        this.jwtToken = jwtToken;
     }
+
     //Get customer by id
     public Customer getCustomer(String id) {
         //fetch the customer or throw exception not found
@@ -36,22 +42,29 @@ public class CustomerService {
        //Get a list of Customer Cash back history
         List<CashbackHistory> history = customer.getCashbackHistory();
         return history.stream().map(this::historyDto).toList();
-
     }
-    // Get Single Reward History
-    public RewardHistoryDto getReward(String transactionId) {
+
+    // Generate token
+    public TokenResponseDto getToken(TokenRequestDto customerid) {
         //GET customer
-      CashbackHistory history = cashBackHistoryRepository.findByTransactionId(transactionId).orElseThrow(()-> new IllegalArgumentException("Transaction not found"));
-        return historyDto(history);
+        Customer customer = getCustomer(customerid.getCustomerId());
+        System.out.println(customer);
+        assert customer != null;
+        String token = jwtToken.generateToken(customerid.getCustomerId());
+
+        return  new TokenResponseDto(token);
+
 
     }
 
-    //Get Total Reward
-    public CustomerDto customerReward(String customerId) {
-        Customer customer = getCustomer(customerId);
+    //Get Total balance
+    public CustomerDto customerReward() {
+       String principal = SecurityContextHolder.getContext().getAuthentication().getName();
+        Customer customer = getCustomer(principal);
         assert customer != null;
         return mapToCustomerDto(customer);
     }
+    //Mapping to Customer
     private CustomerDto mapToCustomerDto(Customer customer) {
        return CustomerDto.builder()
                 .currentBalance(customer.getCurrentBalance())
@@ -59,7 +72,7 @@ public class CustomerService {
                 .customerId(customer.getCustomerId())
                 .build();
     }
-
+    //Mapping to reword
     private RewardHistoryDto historyDto(CashbackHistory cashbackHistory) {
         return RewardHistoryDto.builder()
                 .transactionId(cashbackHistory.getTransactionId())
